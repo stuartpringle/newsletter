@@ -18,10 +18,17 @@ class ServiceProvider extends AddonServiceProvider
         'cp' => __DIR__.'/../routes/cp.php',
     ];
 
+    public function register(): void
+    {
+        parent::register();
+
+        // Ensure views are available even if the Statamic addon manifest isn't built yet.
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'newsletter');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+    }
+
     public function bootAddon(): void
     {
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-
         View::composer('newsletter::widgets.mailing_list_signups', function ($view) {
             $signups = MailingListSignup::latest()->limit(10)->get();
             $view->with('signups', $signups);
