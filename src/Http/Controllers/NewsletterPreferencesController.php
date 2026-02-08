@@ -16,7 +16,12 @@ class NewsletterPreferencesController extends Controller
             return view('newsletter::preferences.invalid');
         }
 
-        return view('newsletter::preferences.show', compact('signup'));
+        $signups = MailingListSignup::where('email', $signup->email)
+            ->where('tenant_id', $signup->tenant_id)
+            ->with('list')
+            ->get();
+
+        return view('newsletter::preferences.show', compact('signup', 'signups'));
     }
 
     public function update(Request $request, $token)
@@ -28,12 +33,27 @@ class NewsletterPreferencesController extends Controller
         }
 
         $data = $request->validate([
-            'unsubscribe' => 'nullable|boolean',
+            'unsubscribe_all' => 'nullable|boolean',
+            'lists' => 'array',
+            'lists.*' => 'integer',
         ]);
 
-        if (($data['unsubscribe'] ?? false) === true) {
-            $signup->update(['status' => 'unsubscribed']);
+        $signups = MailingListSignup::where('email', $signup->email)
+            ->where('tenant_id', $signup->tenant_id)
+            ->get();
+
+        if (($data['unsubscribe_all'] ?? false) === true) {
+            foreach ($signups as $s) {
+                $s->update(['status' => 'unsubscribed']);
+            }
             return view('newsletter::preferences.updated');
+        }
+
+        $listIds = collect($data['lists'] ?? [])->map(fn ($id) => (int) $id)->all();
+
+        foreach ($signups as $s) {
+            $shouldBeSubscribed = in_array((int) $s->list_id, $listIds, true);
+            $s->update(['status' => $shouldBeSubscribed ? 'subscribed' : 'unsubscribed']);
         }
 
         return view('newsletter::preferences.updated');
