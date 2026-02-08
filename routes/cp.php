@@ -5,6 +5,7 @@ use StuartPringle\Newsletter\Http\Controllers\NewsletterController;
 use StuartPringle\Newsletter\Http\Controllers\Cp\ListsController;
 use StuartPringle\Newsletter\Http\Controllers\Cp\TagsController;
 use StuartPringle\Newsletter\Http\Controllers\Cp\SegmentsController;
+use StuartPringle\Newsletter\Http\Controllers\Cp\TenantsController;
 
 Route::middleware(['statamic.cp.authenticated'])
     ->prefix('newsletter')
@@ -41,5 +42,18 @@ Route::middleware(['statamic.cp.authenticated'])
             Route::get('/{segment}/edit', [SegmentsController::class, 'edit'])->name('edit');
             Route::put('/{segment}', [SegmentsController::class, 'update'])->name('update');
             Route::delete('/{segment}', [SegmentsController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('tenants')->name('tenants.')->group(function () {
+            Route::get('/', [TenantsController::class, 'index'])->name('index');
+            Route::get('/create', [TenantsController::class, 'create'])->name('create');
+            Route::post('/', [TenantsController::class, 'store'])->name('store');
+            Route::get('/{tenant}/edit', [TenantsController::class, 'edit'])->name('edit');
+            Route::put('/{tenant}', [TenantsController::class, 'update'])->name('update');
+            Route::delete('/{tenant}', [TenantsController::class, 'destroy'])->name('destroy');
+
+            Route::post('/{tenant}/members', [TenantsController::class, 'addMember'])->name('members.store');
+            Route::put('/{tenant}/members/{member}', [TenantsController::class, 'updateMember'])->name('members.update');
+            Route::delete('/{tenant}/members/{member}', [TenantsController::class, 'removeMember'])->name('members.destroy');
         });
     });
