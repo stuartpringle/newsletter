@@ -3,6 +3,7 @@
 namespace StuartPringle\Newsletter\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Mail;
 use StuartPringle\Newsletter\Mail\ConfirmNewsletter;
 use StuartPringle\Newsletter\Models\MailingListSignup as NewsletterSubscriber;
