@@ -12,6 +12,7 @@ class MailingListSignup extends Model
 
     protected $fillable = [
         'email',
+        'name',
         'tenant_id',
         'list_id',
         'status',

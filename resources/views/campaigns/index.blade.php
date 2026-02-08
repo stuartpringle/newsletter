@@ -25,6 +25,10 @@
                 <td>{{ $campaign->created_at->format('Y-m-d') }}</td>
                 <td class="flex gap-2">
                     <a class="btn text-xs" href="{{ cp_route('newsletter.campaigns.edit', $campaign) }}">Edit</a>
+                    <form method="POST" action="{{ cp_route('newsletter.campaigns.send', $campaign) }}">
+                        @csrf
+                        <button class="btn text-xs">Send</button>
+                    </form>
                     <form method="POST" action="{{ cp_route('newsletter.campaigns.destroy', $campaign) }}">
                         @csrf @method('DELETE')
                         <button class="btn text-xs text-red-600">Delete</button>

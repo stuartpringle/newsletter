@@ -20,4 +20,9 @@ return [
 
     // Asset container for newsletter images.
     'assets_container' => 'newsletter',
+
+    // Tracking and webhook behavior.
+    'tracking' => [
+        'enabled' => true,
+    ],
 ];
