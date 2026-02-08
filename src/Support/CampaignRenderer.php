@@ -79,14 +79,14 @@ class CampaignRenderer
 
     protected static function ensureUnsubscribe(string $html, MailingListSignup $subscriber): string
     {
-        $unsubscribe = url('/newsletter/unsubscribe/'.$subscriber->verification_token);
+        $unsubscribe = url('/newsletter/preferences/'.$subscriber->verification_token);
 
         if (str_contains($html, $unsubscribe)) {
             return $html;
         }
 
         return $html."<p style=\"font-size:12px;color:#666;\">".
-            "<a href=\"{$unsubscribe}\">Unsubscribe</a>".
+            "<a href=\"{$unsubscribe}\">Manage preferences</a>".
             "</p>";
     }
 }

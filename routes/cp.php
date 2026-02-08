@@ -9,6 +9,7 @@ use StuartPringle\Newsletter\Http\Controllers\Cp\NewsletterUsersController;
 use StuartPringle\Newsletter\Http\Controllers\Cp\TemplatesController;
 use StuartPringle\Newsletter\Http\Controllers\Cp\CampaignsController;
 use StuartPringle\Newsletter\Http\Controllers\Cp\CampaignSendController;
+use StuartPringle\Newsletter\Http\Controllers\Cp\AnalyticsController;
 
 Route::middleware(['statamic.cp.authenticated'])
     ->prefix('newsletter')
@@ -77,5 +78,9 @@ Route::middleware(['statamic.cp.authenticated'])
             Route::put('/{campaign}', [CampaignsController::class, 'update'])->name('update');
             Route::delete('/{campaign}', [CampaignsController::class, 'destroy'])->name('destroy');
             Route::post('/{campaign}/send', [CampaignSendController::class, 'send'])->name('send');
+        });
+
+        Route::prefix('analytics')->name('analytics.')->group(function () {
+            Route::get('/', [AnalyticsController::class, 'index'])->name('index');
         });
     });

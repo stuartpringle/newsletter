@@ -76,6 +76,11 @@ class ServiceProvider extends AddonServiceProvider
                 ->section('Newsletter')
                 ->route('newsletter.campaigns.index')
                 ->icon('paper-plane');
+
+            $nav->create('Analytics')
+                ->section('Newsletter')
+                ->route('newsletter.analytics.index')
+                ->icon('chart-bar');
         });
     }
 }
