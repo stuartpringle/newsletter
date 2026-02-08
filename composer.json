@@ -1,0 +1,26 @@
+{
+  "name": "stuartpringle/newsletter",
+  "description": "Newsletter subscribers addon for Statamic",
+  "type": "statamic-addon",
+  "license": "proprietary",
+  "autoload": {
+    "psr-4": {
+      "StuartPringle\\Newsletter\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "StuartPringle\\Newsletter\\ServiceProvider"
+      ]
+    },
+    "statamic": {
+      "name": "Newsletter",
+      "description": "Newsletter subscribers management",
+      "developer": "Stuart Pringle"
+    }
+  },
+  "require": {
+    "php": "^8.2"
+  }
+}
