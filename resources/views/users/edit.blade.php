@@ -1,9 +1,9 @@
 @extends('statamic::layout')
-@section('title', 'Manage Tenant')
+@section('title', 'Manage Newsletter Users')
 
 @section('content')
 <div class="card p-4 mb-6">
-    <form method="POST" action="{{ cp_route('newsletter.tenants.update', $tenant) }}" class="space-y-4">
+    <form method="POST" action="{{ cp_route('newsletter.users.update', $tenant) }}" class="space-y-4">
         @csrf @method('PUT')
 
         <div>
@@ -23,7 +23,7 @@
 <div class="card p-4">
     <h2 class="text-lg font-bold mb-4">Members</h2>
 
-    <form method="POST" action="{{ cp_route('newsletter.tenants.members.store', $tenant) }}" class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-6">
+    <form method="POST" action="{{ cp_route('newsletter.users.members.store', $tenant) }}" class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-6">
         @csrf
         <select name="user_id" class="input">
             @foreach ($users as $user)
@@ -51,7 +51,7 @@
             <tr>
                 <td>{{ $user?->email() ?? $member->user_id }}</td>
                 <td>
-                    <form method="POST" action="{{ cp_route('newsletter.tenants.members.update', [$tenant, $member]) }}">
+                    <form method="POST" action="{{ cp_route('newsletter.users.members.update', [$tenant, $member]) }}">
                         @csrf @method('PUT')
                         <select name="role" onchange="this.form.submit()" class="input">
                             <option value="admin" @selected($member->role === 'admin')>Admin</option>
@@ -60,7 +60,7 @@
                     </form>
                 </td>
                 <td>
-                    <form method="POST" action="{{ cp_route('newsletter.tenants.members.destroy', [$tenant, $member]) }}">
+                    <form method="POST" action="{{ cp_route('newsletter.users.members.destroy', [$tenant, $member]) }}">
                         @csrf @method('DELETE')
                         <button class="btn text-xs text-red-600">Remove</button>
                     </form>

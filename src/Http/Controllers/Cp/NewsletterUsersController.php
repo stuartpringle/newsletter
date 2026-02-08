@@ -4,31 +4,30 @@ namespace StuartPringle\Newsletter\Http\Controllers\Cp;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Statamic\Facades\User;
 use StuartPringle\Newsletter\Models\Tenant;
 use StuartPringle\Newsletter\Models\TenantUser;
 
-class TenantsController extends Controller
+class NewsletterUsersController extends Controller
 {
     public function index()
     {
-        $this->authorizeSystemAdmin();
+        $this->authorizeSuper();
         $tenants = Tenant::orderBy('name')->get();
 
-        return view('newsletter::tenants.index', compact('tenants'));
+        return view('newsletter::users.index', compact('tenants'));
     }
 
     public function create()
     {
-        $this->authorizeSystemAdmin();
-        return view('newsletter::tenants.create');
+        $this->authorizeSuper();
+        return view('newsletter::users.create');
     }
 
     public function store(Request $request)
     {
-        $this->authorizeSystemAdmin();
+        $this->authorizeSuper();
 
         $data = $request->validate([
             'name' => 'required|string|max:255',
@@ -39,22 +38,22 @@ class TenantsController extends Controller
 
         $tenant = Tenant::create($data);
 
-        return redirect()->route('statamic.cp.newsletter.tenants.edit', $tenant)->with('success', 'Tenant created.');
+        return redirect()->route('statamic.cp.newsletter.users.edit', $tenant)->with('success', 'Tenant created.');
     }
 
     public function edit(Tenant $tenant)
     {
-        $this->authorizeSystemAdmin();
+        $this->authorizeSuper();
 
         $members = TenantUser::where('tenant_id', $tenant->id)->get();
         $users = User::query()->get();
 
-        return view('newsletter::tenants.edit', compact('tenant', 'members', 'users'));
+        return view('newsletter::users.edit', compact('tenant', 'members', 'users'));
     }
 
     public function update(Request $request, Tenant $tenant)
     {
-        $this->authorizeSystemAdmin();
+        $this->authorizeSuper();
 
         $data = $request->validate([
             'name' => 'required|string|max:255',
@@ -65,12 +64,12 @@ class TenantsController extends Controller
 
         $tenant->update($data);
 
-        return redirect()->route('statamic.cp.newsletter.tenants.edit', $tenant)->with('success', 'Tenant updated.');
+        return redirect()->route('statamic.cp.newsletter.users.edit', $tenant)->with('success', 'Tenant updated.');
     }
 
     public function destroy(Tenant $tenant)
     {
-        $this->authorizeSystemAdmin();
+        $this->authorizeSuper();
         $tenant->delete();
 
         return back()->with('success', 'Tenant deleted.');
@@ -78,7 +77,7 @@ class TenantsController extends Controller
 
     public function addMember(Request $request, Tenant $tenant)
     {
-        $this->authorizeSystemAdmin();
+        $this->authorizeSuper();
 
         $data = $request->validate([
             'user_id' => 'required|string',
@@ -95,7 +94,7 @@ class TenantsController extends Controller
 
     public function updateMember(Request $request, Tenant $tenant, TenantUser $member)
     {
-        $this->authorizeSystemAdmin();
+        $this->authorizeSuper();
         abort_if($member->tenant_id !== $tenant->id, 404);
 
         $data = $request->validate([
@@ -109,7 +108,7 @@ class TenantsController extends Controller
 
     public function removeMember(Tenant $tenant, TenantUser $member)
     {
-        $this->authorizeSystemAdmin();
+        $this->authorizeSuper();
         abort_if($member->tenant_id !== $tenant->id, 404);
 
         $member->delete();
@@ -117,22 +116,9 @@ class TenantsController extends Controller
         return back()->with('success', 'Member removed.');
     }
 
-    protected function authorizeSystemAdmin(): void
+    protected function authorizeSuper(): void
     {
         $authUser = auth()->user();
-
-        if ($authUser && method_exists($authUser, 'isSuper') && $authUser->isSuper()) {
-            return;
-        }
-
-        if (! Schema::hasTable('newsletter_tenant_user')) {
-            return;
-        }
-
-        if (! TenantUser::query()->exists()) {
-            return;
-        }
-
-        abort(403, 'Admin role required.');
+        abort_if(! $authUser || ! method_exists($authUser, 'isSuper') || ! $authUser->isSuper(), 403, 'Super user required.');
     }
 }

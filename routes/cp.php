@@ -5,7 +5,7 @@ use StuartPringle\Newsletter\Http\Controllers\NewsletterController;
 use StuartPringle\Newsletter\Http\Controllers\Cp\ListsController;
 use StuartPringle\Newsletter\Http\Controllers\Cp\TagsController;
 use StuartPringle\Newsletter\Http\Controllers\Cp\SegmentsController;
-use StuartPringle\Newsletter\Http\Controllers\Cp\TenantsController;
+use StuartPringle\Newsletter\Http\Controllers\Cp\NewsletterUsersController;
 
 Route::middleware(['statamic.cp.authenticated'])
     ->prefix('newsletter')
@@ -44,16 +44,16 @@ Route::middleware(['statamic.cp.authenticated'])
             Route::delete('/{segment}', [SegmentsController::class, 'destroy'])->name('destroy');
         });
 
-        Route::prefix('tenants')->name('tenants.')->group(function () {
-            Route::get('/', [TenantsController::class, 'index'])->name('index');
-            Route::get('/create', [TenantsController::class, 'create'])->name('create');
-            Route::post('/', [TenantsController::class, 'store'])->name('store');
-            Route::get('/{tenant}/edit', [TenantsController::class, 'edit'])->name('edit');
-            Route::put('/{tenant}', [TenantsController::class, 'update'])->name('update');
-            Route::delete('/{tenant}', [TenantsController::class, 'destroy'])->name('destroy');
+        Route::prefix('newsletter_users')->name('users.')->group(function () {
+            Route::get('/', [NewsletterUsersController::class, 'index'])->name('index');
+            Route::get('/create', [NewsletterUsersController::class, 'create'])->name('create');
+            Route::post('/', [NewsletterUsersController::class, 'store'])->name('store');
+            Route::get('/{tenant}/edit', [NewsletterUsersController::class, 'edit'])->name('edit');
+            Route::put('/{tenant}', [NewsletterUsersController::class, 'update'])->name('update');
+            Route::delete('/{tenant}', [NewsletterUsersController::class, 'destroy'])->name('destroy');
 
-            Route::post('/{tenant}/members', [TenantsController::class, 'addMember'])->name('members.store');
-            Route::put('/{tenant}/members/{member}', [TenantsController::class, 'updateMember'])->name('members.update');
-            Route::delete('/{tenant}/members/{member}', [TenantsController::class, 'removeMember'])->name('members.destroy');
+            Route::post('/{tenant}/members', [NewsletterUsersController::class, 'addMember'])->name('members.store');
+            Route::put('/{tenant}/members/{member}', [NewsletterUsersController::class, 'updateMember'])->name('members.update');
+            Route::delete('/{tenant}/members/{member}', [NewsletterUsersController::class, 'removeMember'])->name('members.destroy');
         });
     });

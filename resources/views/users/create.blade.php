@@ -1,9 +1,9 @@
 @extends('statamic::layout')
-@section('title', 'Create Tenant')
+@section('title', 'Create Newsletter Tenant')
 
 @section('content')
 <div class="card p-4">
-    <form method="POST" action="{{ cp_route('newsletter.tenants.store') }}" class="space-y-4">
+    <form method="POST" action="{{ cp_route('newsletter.users.store') }}" class="space-y-4">
         @csrf
 
         <div>
