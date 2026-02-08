@@ -30,7 +30,7 @@ class ConfirmNewsletter extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Confirm Newsletter',
+            subject: config('newsletter.confirmation_subject', 'Confirm Newsletter'),
         );
     }
 

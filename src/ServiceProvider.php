@@ -25,10 +25,17 @@ class ServiceProvider extends AddonServiceProvider
         // Ensure views are available even if the Statamic addon manifest isn't built yet.
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'newsletter');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->mergeConfigFrom(__DIR__.'/../config/newsletter.php', 'newsletter');
     }
 
     public function bootAddon(): void
     {
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__.'/../config/newsletter.php' => config_path('newsletter.php'),
+            ], 'newsletter-config');
+        }
+
         View::composer('newsletter::widgets.mailing_list_signups', function ($view) {
             $signups = MailingListSignup::latest()->limit(10)->get();
             $view->with('signups', $signups);

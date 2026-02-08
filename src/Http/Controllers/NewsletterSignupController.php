@@ -15,15 +15,17 @@ class NewsletterSignupController extends Controller
     public function store(Request $request)
     {
         $key = 'newsletter-signup:' . $request->ip();
+        $maxAttempts = (int) config('newsletter.rate_limit.max_attempts', 5);
+        $decaySeconds = (int) config('newsletter.rate_limit.decay_seconds', 60);
         
-        if (RateLimiter::tooManyAttempts($key, 5)) {
+        if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
             return back()->withErrors(['email' => 'Too many attempts. Try again later.']);
         }
 
-        RateLimiter::hit($key, 60); // lock out for 60 seconds
+        RateLimiter::hit($key, $decaySeconds);
 
 
-        if ($request->filled('name')) { //honeypot field, bogus response
+        if ($request->filled(config('newsletter.honeypot_field', 'name'))) { // honeypot field
             $msg = 'Check your email to confirm your subscription!';
             return $request->expectsJson()
                 ? response()->json(['message' => $msg])
