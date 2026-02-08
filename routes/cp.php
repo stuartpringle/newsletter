@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use StuartPringle\Newsletter\Http\Controllers\NewsletterController;
+use StuartPringle\Newsletter\Http\Controllers\Cp\ListsController;
+use StuartPringle\Newsletter\Http\Controllers\Cp\TagsController;
+use StuartPringle\Newsletter\Http\Controllers\Cp\SegmentsController;
 
 Route::middleware(['statamic.cp.authenticated'])
     ->prefix('newsletter')
@@ -12,4 +15,31 @@ Route::middleware(['statamic.cp.authenticated'])
         Route::post('/status/{subscriber}', [NewsletterController::class, 'updateStatus'])->name('status');
         Route::delete('/{subscriber}', [NewsletterController::class, 'destroy'])->name('destroy');
         Route::post('/add', [NewsletterController::class, 'store'])->name('store');
+
+        Route::prefix('lists')->name('lists.')->group(function () {
+            Route::get('/', [ListsController::class, 'index'])->name('index');
+            Route::get('/create', [ListsController::class, 'create'])->name('create');
+            Route::post('/', [ListsController::class, 'store'])->name('store');
+            Route::get('/{list}/edit', [ListsController::class, 'edit'])->name('edit');
+            Route::put('/{list}', [ListsController::class, 'update'])->name('update');
+            Route::delete('/{list}', [ListsController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('tags')->name('tags.')->group(function () {
+            Route::get('/', [TagsController::class, 'index'])->name('index');
+            Route::get('/create', [TagsController::class, 'create'])->name('create');
+            Route::post('/', [TagsController::class, 'store'])->name('store');
+            Route::get('/{tag}/edit', [TagsController::class, 'edit'])->name('edit');
+            Route::put('/{tag}', [TagsController::class, 'update'])->name('update');
+            Route::delete('/{tag}', [TagsController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('segments')->name('segments.')->group(function () {
+            Route::get('/', [SegmentsController::class, 'index'])->name('index');
+            Route::get('/create', [SegmentsController::class, 'create'])->name('create');
+            Route::post('/', [SegmentsController::class, 'store'])->name('store');
+            Route::get('/{segment}/edit', [SegmentsController::class, 'edit'])->name('edit');
+            Route::put('/{segment}', [SegmentsController::class, 'update'])->name('update');
+            Route::delete('/{segment}', [SegmentsController::class, 'destroy'])->name('destroy');
+        });
     });

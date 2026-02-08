@@ -46,6 +46,21 @@ class ServiceProvider extends AddonServiceProvider
                 ->section('Newsletter')
                 ->route('newsletter.index')
                 ->icon('email-utility');
+
+            $nav->create('Lists')
+                ->section('Newsletter')
+                ->route('newsletter.lists.index')
+                ->icon('list');
+
+            $nav->create('Tags')
+                ->section('Newsletter')
+                ->route('newsletter.tags.index')
+                ->icon('tag');
+
+            $nav->create('Segments')
+                ->section('Newsletter')
+                ->route('newsletter.segments.index')
+                ->icon('filter');
         });
     }
 }
