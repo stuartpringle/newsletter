@@ -11,6 +11,7 @@
         <thead>
             <tr>
                 <th>Email</th>
+                <th>List</th>
                 <th>Status</th>
                 <th>Joined</th>
                 <th>Actions</th>
@@ -20,6 +21,7 @@
             @foreach ($subscribers as $subscriber)
             <tr>
                 <td>{{ $subscriber->email }}</td>
+                <td>{{ $subscriber->list?->name ?? '—' }}</td>
                 <td>
                     <form method="POST" action="{{ cp_route('newsletter.status', $subscriber) }}">
                         @csrf
@@ -62,6 +64,15 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium mb-1" for="list_id">Mailing List</label>
+                <select name="list_id" id="list_id" class="input w-full">
+                    @foreach ($lists as $list)
+                        <option value="{{ $list->id }}">{{ $list->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
             <div>
                 <label class="block text-sm font-medium mb-1" for="status">Status</label>
                 <select name="status" id="status" class="input w-full">

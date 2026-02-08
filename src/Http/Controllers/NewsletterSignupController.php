@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\RateLimiter;
 use StuartPringle\Newsletter\Mail\ConfirmNewsletter;
+use StuartPringle\Newsletter\Models\MailingList;
 use StuartPringle\Newsletter\Models\MailingListSignup;
+use StuartPringle\Newsletter\Support\CurrentTenant;
 
 class NewsletterSignupController extends Controller
 {
@@ -34,6 +36,18 @@ class NewsletterSignupController extends Controller
 
         $request->validate(['email' => 'required|email']);
 
+        $tenant = CurrentTenant::resolve();
+        $listId = (int) $request->input('list_id', 0);
+        $list = null;
+
+        if ($tenant && $listId) {
+            $list = MailingList::where('tenant_id', $tenant->id)->where('id', $listId)->first();
+        }
+
+        if (! $list && $tenant) {
+            $list = MailingList::where('tenant_id', $tenant->id)->orderBy('id')->first();
+        }
+
         $existing = MailingListSignup::where('email', $request->email)->first();
 
         if ($existing && $existing->status === 'subscribed') {
@@ -48,6 +62,8 @@ class NewsletterSignupController extends Controller
             'ip' => $request->ip(),
             'user_agent' => $request->userAgent(),
             'referrer' => $request->headers->get('referer'),
+            'tenant_id' => $tenant?->id,
+            'list_id' => $list?->id,
         ]);
 
         Mail::to($request->email)->send(new ConfirmNewsletter($signup));
@@ -64,7 +80,11 @@ class NewsletterSignupController extends Controller
         $token = self::generateUniqueToken();
 
         return MailingListSignup::updateOrCreate(
-            ['email' => $email],
+            [
+                'email' => $email,
+                'tenant_id' => $data['tenant_id'] ?? null,
+                'list_id' => $data['list_id'] ?? null,
+            ],
             [
                 'status' => $data['status'] ?? 'unconfirmed',
                 'verification_token' => $token,

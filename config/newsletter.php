@@ -12,4 +12,9 @@ return [
 
     // Confirmation email subject.
     'confirmation_subject' => 'Confirm Newsletter',
+
+    // Tenant defaults
+    'tenant' => [
+        'default_tenant_id' => null,
+    ],
 ];
