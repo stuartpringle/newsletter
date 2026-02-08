@@ -3,6 +3,7 @@
 namespace StuartPringle\Newsletter\Support;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 use StuartPringle\Newsletter\Models\Tenant;
 use StuartPringle\Newsletter\Models\TenantUser;
 
@@ -10,6 +11,10 @@ class CurrentTenant
 {
     public static function resolve(): ?Tenant
     {
+        if (! Schema::hasTable('newsletter_tenants') || ! Schema::hasTable('newsletter_tenant_user')) {
+            return null;
+        }
+
         $user = Auth::user();
 
         if ($user) {
