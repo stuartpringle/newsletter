@@ -17,4 +17,7 @@ return [
     'tenant' => [
         'default_tenant_id' => null,
     ],
+
+    // Asset container for newsletter images.
+    'assets_container' => 'newsletter',
 ];

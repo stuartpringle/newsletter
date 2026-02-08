@@ -6,6 +6,8 @@ use StuartPringle\Newsletter\Http\Controllers\Cp\ListsController;
 use StuartPringle\Newsletter\Http\Controllers\Cp\TagsController;
 use StuartPringle\Newsletter\Http\Controllers\Cp\SegmentsController;
 use StuartPringle\Newsletter\Http\Controllers\Cp\NewsletterUsersController;
+use StuartPringle\Newsletter\Http\Controllers\Cp\TemplatesController;
+use StuartPringle\Newsletter\Http\Controllers\Cp\CampaignsController;
 
 Route::middleware(['statamic.cp.authenticated'])
     ->prefix('newsletter')
@@ -55,5 +57,23 @@ Route::middleware(['statamic.cp.authenticated'])
             Route::post('/{tenant}/members', [NewsletterUsersController::class, 'addMember'])->name('members.store');
             Route::put('/{tenant}/members/{member}', [NewsletterUsersController::class, 'updateMember'])->name('members.update');
             Route::delete('/{tenant}/members/{member}', [NewsletterUsersController::class, 'removeMember'])->name('members.destroy');
+        });
+
+        Route::prefix('templates')->name('templates.')->group(function () {
+            Route::get('/', [TemplatesController::class, 'index'])->name('index');
+            Route::get('/create', [TemplatesController::class, 'create'])->name('create');
+            Route::post('/', [TemplatesController::class, 'store'])->name('store');
+            Route::get('/{template}/edit', [TemplatesController::class, 'edit'])->name('edit');
+            Route::put('/{template}', [TemplatesController::class, 'update'])->name('update');
+            Route::delete('/{template}', [TemplatesController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('campaigns')->name('campaigns.')->group(function () {
+            Route::get('/', [CampaignsController::class, 'index'])->name('index');
+            Route::get('/create', [CampaignsController::class, 'create'])->name('create');
+            Route::post('/', [CampaignsController::class, 'store'])->name('store');
+            Route::get('/{campaign}/edit', [CampaignsController::class, 'edit'])->name('edit');
+            Route::put('/{campaign}', [CampaignsController::class, 'update'])->name('update');
+            Route::delete('/{campaign}', [CampaignsController::class, 'destroy'])->name('destroy');
         });
     });
